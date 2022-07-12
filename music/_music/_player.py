@@ -112,7 +112,7 @@ class Player(lavalink.BasePlayer):
             return
         try:
             embed = discord.Embed(
-                title="Now Playing",
+                title="#MendingArmy [Now Playing]",
                 description=f"[{track.title}]({track.uri}) [<@!{track.requester}>]",
                 colour=self.main_color
             )
@@ -221,6 +221,7 @@ class Player(lavalink.BasePlayer):
                 if track.success:
                     try:
                         embed = discord.Embed(
+                            title="#MendingArmy [Queued]"
                             description=f"Queued [{track.title}]({track.uri}) [<@!{track.requester}>]",
                             colour=self.main_color
                         )
