@@ -104,7 +104,8 @@ class Player(lavalink.BasePlayer):
     @playing_message.setter
     def playing_message(self, value: Message):
         if self._playing_message:
-            asyncio.create_task(self._playing_message.delete())
+            print("Skipping!")
+            #asyncio.create_task(self._playing_message.delete())
         self._playing_message = value
 
     async def send_playing_message(self, track):
