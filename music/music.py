@@ -475,11 +475,11 @@ class Music(commands.Cog, name="music"):
                               'spotify_client_secret': SPOTIFY_CLIENT_SECRET}},
                     upsert=True
                 )
-            return await ctx.send("Successfully set and enabled spotify!")
+            return await ctx.reply("Successfully set and enabled spotify!")
         elif type == "genius":
             GENIUS_TOKEN = config
             self._lyrics_api = Lyrics(GENIUS_TOKEN)
-            m = await ctx.send("Checking the token... please wait")
+            m = await ctx.reply("Checking the token... please wait")
             if not await self._lyrics_api.test_token():
                 await self.db.find_one_and_update(
                     {'_id': 'music-config'},
@@ -526,7 +526,7 @@ class Music(commands.Cog, name="music"):
                 {'$set': {'lavalink': [config]}},
                 upsert=True
             )
-            return await ctx.send("Successfully set and enabled music!")
+            return await ctx.reply("Successfully set and enabled music!")
 
     @commands.command()
     
@@ -567,7 +567,7 @@ class Music(commands.Cog, name="music"):
                 await asyncio.gather(*[track.load(player) for track in tracks])
                 pages = self._render(tracks)
                 if len(pages) == 1:
-                    return await ctx.send(pages[-1], allowed_mentions=AllowedMentions.none())
+                    return await ctx.reply(pages[-1], allowed_mentions=AllowedMentions.none())
                 session = PaginatorSession(ctx, *pages)
                 return await session.run()
 
@@ -575,7 +575,7 @@ class Music(commands.Cog, name="music"):
                                    duration=titles[0][1], spotify=True)
             await track.load(player)
             pages = self._render([track])
-            return await ctx.send(pages[-1], allowed_mentions=AllowedMentions.none())
+            return await ctx.reply(pages[-1], allowed_mentions=AllowedMentions.none())
 
         if is_youtube_playlist:
             try:
@@ -600,7 +600,7 @@ class Music(commands.Cog, name="music"):
 
                 pages = self._render(tracks)
                 if len(pages) == 1:
-                    return await ctx.send(pages[-1], allowed_mentions=AllowedMentions.none())
+                    return await ctx.reply(pages[-1], allowed_mentions=AllowedMentions.none())
                 session = PaginatorSession(ctx, *pages)
                 return await session.run()
 
@@ -623,7 +623,7 @@ class Music(commands.Cog, name="music"):
             tracks += [LazyAudioTrack.from_loaded(track, ctx.author.id)]
 
         pages = self._render(tracks)
-        return await ctx.send(pages[-1], allowed_mentions=AllowedMentions.none())
+        return await ctx.reply(pages[-1], allowed_mentions=AllowedMentions.none())
 
     @commands.command(aliases=['enqueue'])
     async def play(self, ctx, *, query: Str(remove_code=True) = None):
@@ -642,7 +642,7 @@ class Music(commands.Cog, name="music"):
                 track = await player.play_previous()
                 if not track:
                     embed = discord.Embed(description="There are no songs in the queue!",color=0x2f3136)
-                    await ctx.channel.send(embed=embed)
+                    await ctx.reply(embed=embed)
                 if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
                     try:
                         return await ctx.message.add_reaction(":white_check_mark:")
@@ -655,7 +655,7 @@ class Music(commands.Cog, name="music"):
                         return await ctx.message.add_reaction(":arrow_forward:")
                     except discord.HTTPException:
                         logger.debug("Failed to add reaction")
-            return await ctx.send('Playing!')
+            return await ctx.reply('Playing!')
 
         raw_query = track_title = query = query.strip('<>')
         matches = URL_REGEX.search(query)
@@ -690,7 +690,7 @@ class Music(commands.Cog, name="music"):
 
                 if spotify_image:
                     embed.set_thumbnail(url=spotify_image)
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
                 for title, duration in titles:
                     track = LazyAudioTrack(f'ytsearch:{title}', title, ctx.author.id,
                                            duration=duration, spotify=True)
@@ -731,7 +731,7 @@ class Music(commands.Cog, name="music"):
                         description=f"Queued {utils.plural(len(result['tracks'])):track}",
                         colour=self.bot.main_color
                     )
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed)
                     for track in result['tracks']:
                         # noinspection PyTypeChecker
                         track = LazyAudioTrack.from_loaded(track, ctx.author.id)
@@ -783,7 +783,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("⏸")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        await ctx.send("Paused!")
+        await ctx.reply("Paused!")
 
     @commands.cooldown(1, 2)
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
@@ -804,7 +804,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("▶️")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        await ctx.send('Now resuming!')
+        await ctx.reply('Now resuming!')
 
     @commands.cooldown(1, 2)
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
@@ -820,14 +820,14 @@ class Music(commands.Cog, name="music"):
                     return await ctx.message.add_reaction("👌")
                 except discord.HTTPException:
                     logger.debug("Failed to add reaction")
-            return await ctx.send('Skipped!')
+            return await ctx.reply('Skipped!')
         else:
             if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
                 try:
                     return await ctx.message.add_reaction("🚫")
                 except discord.HTTPException:
                     logger.debug("Failed to add reaction")
-            return await ctx.send('No more songs!')
+            return await ctx.reply('No more songs!')
 
     @commands.cooldown(1, 2)
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
@@ -841,14 +841,14 @@ class Music(commands.Cog, name="music"):
                     return await ctx.message.add_reaction("👌")
                 except discord.HTTPException:
                     logger.debug("Failed to add reaction")
-            return await ctx.send('Backed!')
+            return await ctx.reply('Backed!')
         else:
             if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
                 try:
                     return await ctx.message.add_reaction("🚫")
                 except discord.HTTPException:
                     logger.debug("Failed to add reaction")
-            return await ctx.send('No more songs!')
+            return await ctx.reply('No more songs!')
 
     @commands.command(aliases=["summon","connect"])
     async def join(self, ctx):
@@ -868,7 +868,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("👌")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        return await ctx.send('Joined!')
+        return await ctx.reply('Joined!')
 
     @commands.command()
     async def clear(self, ctx):
@@ -886,7 +886,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("👌")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        return await ctx.send(f'{ctx.author.mention} cleared the queue!')
+        return await ctx.reply(f'{ctx.author.mention} cleared the queue!')
 
     @commands.command()
     async def queue(self, ctx):
@@ -900,7 +900,7 @@ class Music(commands.Cog, name="music"):
         player: Player = ctx.player
         pages, current_track = player.queue.rendered
         if len(pages) == 1:
-            return await ctx.send(pages[0], allowed_mentions=AllowedMentions.none())
+            return await ctx.reply(pages[0], allowed_mentions=AllowedMentions.none())
         session = utils.PaginatorSession(ctx, *pages)
         if current_track:
             await session.show_page(current_track)
@@ -926,7 +926,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("👋")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        await ctx.send(f'Disconnected from {ctx.author.voice.channel}')
+        await ctx.reply(f'Disconnected from {ctx.author.voice.channel}')
 
     @commands.command()
     async def stop(self, ctx):
@@ -945,7 +945,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("🛑")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        return await ctx.send(f'{ctx.author.mention} stopped this track!')
+        return await ctx.reply(f'{ctx.author.mention} stopped this track!')
 
     @commands.command()
     async def shuffle(self, ctx):
@@ -959,7 +959,8 @@ class Music(commands.Cog, name="music"):
         player: Player = ctx.player
 
         if not player.queue:
-            raise Failure(ctx, "The queue is empty!")
+            embed = discord.Embed(description="The queue is currently empty!",color=0x2f3136)
+            await ctx.reply(embed=embed)
 
         await player.shuffle()
         if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
@@ -967,7 +968,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("🔀")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        return await ctx.send('Queue shuffled!')
+        return await ctx.reply('Queue shuffled!')
 
     @commands.command(usage="<track or position> <new position>")
     async def movequeue(self, ctx, *, move_query: str):
@@ -985,11 +986,11 @@ class Music(commands.Cog, name="music"):
 
         split = move_query.rsplit(" ", 1)
         if len(split) != 2:
-            return await ctx.send_help(ctx.command)
+            return await ctx.reply_help(ctx.command)
         try:
             new_pos = int(split[1])
         except ValueError:
-            return await ctx.send_help(ctx.command)
+            return await ctx.reply_help(ctx.command)
         track_or_pos = split[0].strip('"` ')
         if not player.queue:
             raise Failure(ctx, "The queue is empty!")
@@ -1001,7 +1002,7 @@ class Music(commands.Cog, name="music"):
             description=f"Moved **{track.title}** to position **{new_pos}**",
             colour=self.bot.main_color
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     @commands.command(usage="<track or position>")    
     async def jump(self, ctx, *, jump_to: str):
@@ -1031,7 +1032,7 @@ class Music(commands.Cog, name="music"):
             description=f'Jumped to **{track.title}** at position **{new_pos}**!',
             colour=self.bot.main_color
         )
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
     @commands.command(usage="<track or position or range>")
     async def remove(self, ctx, *, removing: str):
@@ -1059,13 +1060,13 @@ class Music(commands.Cog, name="music"):
                 description=f'Removed {resp} tracks from queue!',
                 colour=self.bot.main_color
             )
-            return await ctx.send(embed=embed)
+            return await ctx.reply(embed=embed)
         track, pos = resp
         embed = discord.Embed(
             description=f'Removed **{track.title}** at position **{pos}**!',
             colour=self.bot.main_color
         )
-        return await ctx.send(embed=embed)
+        return await ctx.reply(embed=embed)
 
     @staticmethod
     def _parse_duration(ctx, duration):
@@ -1105,7 +1106,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("⏩")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        await ctx.send("Fast forward!")
+        await ctx.reply("Fast forward!")
 
     @commands.command(aliases=['rw'])
     async def rewind(self, ctx, *, duration: typing.Union[float, int, str]):
@@ -1131,7 +1132,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("⏪")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        await ctx.send("Rewind!")
+        await ctx.reply("Rewind!")
 
     @commands.command()
     async def seek(self, ctx, *, timestamp: typing.Union[float, int, str]):
@@ -1160,7 +1161,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction("👌")
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        await ctx.send("Seeked!")
+        await ctx.reply("Seeked!")
 
     @commands.command(aliases=["song", 'np'])
     async def nowplaying(self, ctx):
@@ -1195,7 +1196,7 @@ class Music(commands.Cog, name="music"):
         footer += f"{progress} {utils.seconds_to_time_string(current / 1000, int_seconds=True, format=3)} " \
                   f"/ {utils.seconds_to_time_string(total / 1000, int_seconds=True, format=3)}"
         embed.set_footer(text=footer)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
     @commands.command(aliases=["vol"])  
     async def volume(self, ctx, *, new_volume: typing.Union[float, int, str] = 100):
@@ -1213,7 +1214,7 @@ class Music(commands.Cog, name="music"):
             try:
                 new_volume = float(new_volume.strip('%'))
             except ValueError:
-                return await ctx.send_help(ctx.command)
+                return await ctx.reply_help(ctx.command)
 
         if new_volume < 1 or new_volume > 200:
             raise Failure(ctx, "Volume: `1-200`")
@@ -1237,7 +1238,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        await ctx.send(f"Changing volume to {new_volume}%.")
+        await ctx.reply(f"Changing volume to {new_volume}%.")
 
     @commands.command(aliases=["repeat"])    
     async def loop(self, ctx, *, track_or_queue: str.lower = None):
@@ -1278,7 +1279,7 @@ class Music(commands.Cog, name="music"):
         else:
             player.repeat = None
             message = "Looping is now **disabled**."
-        await ctx.send(embed=discord.Embed(description=message, colour=self.bot.main_color))
+        await ctx.reply(embed=discord.Embed(description=message, colour=self.bot.main_color))
 
     @commands.command(aliases=["lyric"])
     async def lyrics(self, ctx, *, song_name: Str(remove_code=True) = None):
@@ -1299,7 +1300,7 @@ class Music(commands.Cog, name="music"):
                 else:
                     song_name = player.current.title
             else:
-                return await ctx.send_help(ctx.command)
+                return await ctx.reply_help(ctx.command)
         else:
             need_process = True
             query = song_name.strip('<>')
@@ -1370,7 +1371,7 @@ class Music(commands.Cog, name="music"):
             embeds += [embed]
 
         if len(embeds) == 1:
-            return await ctx.send(embed=embeds[0])
+            return await ctx.reply(embed=embeds[0])
 
         session = EmbedPaginatorSession(ctx, *embeds)
         await session.run()
