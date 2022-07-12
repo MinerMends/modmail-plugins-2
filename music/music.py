@@ -1137,7 +1137,9 @@ class Music(commands.Cog, name="music"):
         await ctx.reply("Rewind!")
 
     @commands.command()
-    async def seek(self, ctx, *, timestamp: typing.Union[float, int, str]):
+    async def seek(self, ctx, *, timestamp: typing.Union[float, int, str] = None):
+        if timestamp is None:
+            return None
         if ctx.message.channel.id != 995872482005372958:
           embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
