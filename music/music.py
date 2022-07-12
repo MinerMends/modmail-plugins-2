@@ -641,7 +641,8 @@ class Music(commands.Cog, name="music"):
             if not player.is_playing_a_track:
                 track = await player.play_previous()
                 if not track:
-                    raise Failure(ctx, "There are no songs in the queue!")
+                    embed = discord.Embed(description="There are no songs in the queue!",color=0x2f3136)
+                    await ctx.channel.send(embed=embed)
                 if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
                     try:
                         return await ctx.message.add_reaction(":white_check_mark:")
@@ -849,7 +850,7 @@ class Music(commands.Cog, name="music"):
                     logger.debug("Failed to add reaction")
             return await ctx.send('No more songs!')
 
-    @commands.command(aliases=["summon"])
+    @commands.command(aliases=["summon","connect"])
     async def join(self, ctx):
         """Summon me to your vc"""
         if ctx.message.channel.id != 995872482005372958:
@@ -890,7 +891,7 @@ class Music(commands.Cog, name="music"):
     @commands.command()
     async def queue(self, ctx):
         """Displays the queue"""
-        if ctx.message.channel.id.id != 995872482005372958:
+        if ctx.message.channel.id != 995872482005372958:
           embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
@@ -905,7 +906,7 @@ class Music(commands.Cog, name="music"):
             await session.show_page(current_track)
         await session.run()
 
-    @commands.command(aliases=['dc'])
+    @commands.command(aliases=['dc','leave','exit'])
     async def disconnect(self, ctx):
         """Disconnects me from your voice channel and clears the queue"""
         if ctx.message.channel.id != 995872482005372958:
