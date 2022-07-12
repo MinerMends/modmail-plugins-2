@@ -455,7 +455,7 @@ class Queue:
         track_per_page = 10
 
         if not self._queue:
-            return [f"{prefix}The queue is empty...{suffix}"], None
+            return [f"{prefix}#MendingArmy Queue created by Miner Mends [Empty]{suffix}"], None
 
         messages = []
         current_page = None
