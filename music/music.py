@@ -655,7 +655,8 @@ class Music(commands.Cog, name="music"):
                         return await ctx.message.add_reaction(":arrow_forward:")
                     except discord.HTTPException:
                         logger.debug("Failed to add reaction")
-            return await ctx.reply('Playing!')
+            embed = discord.Embed(description="Playing!",color=0x2f3136)
+            return await ctx.reply(embed=embed)
 
         raw_query = track_title = query = query.strip('<>')
         matches = URL_REGEX.search(query)
@@ -764,7 +765,8 @@ class Music(commands.Cog, name="music"):
         player.load_next_few()
 
         if not loaded_any_song:
-            raise Failure(ctx, 'No matches found!')
+            embed = discord.Embed(description="No matches were found!",color=0x2f3136)
+            await ctx.reply(embed=embed)
 
     @commands.command()  
     async def pause(self, ctx):
