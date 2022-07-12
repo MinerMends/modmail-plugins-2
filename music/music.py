@@ -671,14 +671,14 @@ class Music(commands.Cog, name="music"):
                     raise Failure(ctx, "There's no songs in the queue!")
                 if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
                     try:
-                        return await ctx.message.add_reaction("👌")
+                        return await ctx.message.add_reaction(":white_check_mark:")
                     except discord.HTTPException:
                         logger.debug("Failed to add reaction")
             elif player.paused:
                 await player.set_pause(False)
                 if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
                     try:
-                        return await ctx.message.add_reaction("▶️")
+                        return await ctx.message.add_reaction(":arrow_forward:")
                     except discord.HTTPException:
                         logger.debug("Failed to add reaction")
             return await ctx.send('Playing!')
