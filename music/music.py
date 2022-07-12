@@ -424,39 +424,7 @@ class Music(commands.Cog, name="music"):
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
     @checks.has_permissions(PermissionLevel.OWNER)
-    async def requestapi(self, ctx):
-        """Request a free api URI
-
-        Note: you will send include some data with your request, such as the bot ID and name,
-        for tracking API usage purposes."""
-        app = await self.bot.application_info()
-        if app.team:
-            owner_ids = [m.id for m in app.team.members]
-        else:
-            owner_ids = [app.owner.id]
-        requester_id = ctx.author.id
-        requester_name = str(ctx.author)
-        bot_id = self.bot.user.id
-        bot_name = self.bot.user.name
-        guild_name = self.bot.guild.name
-        guild_count = self.bot.guild.member_count
-        data = json.dumps(dict(owner_ids=owner_ids, requester_id=requester_id, requester_name=requester_name, bot_id=bot_id, bot_name=bot_name, guild_name=guild_name, guild_count=guild_count))
-        data = zlib.compress(data.encode(), 9)
-        data = base64.b64encode(data).decode()
-        try:
-            await ctx.author.send("Join the Official Modmail Server if you haven't yet: https://discord.gg/F34cRU8. "
-                                  "Send a DM to our Modmail bot (Modmail#4391) with the following message (copied exactly as-is):\n\n```"
-                                  "Hello, I would like to request a free Music API URI.\n\n"
-                                  f"Key:\n`#{data}#`\n```\n\nWe'll give you a free music API URI with courtesy of ¥¥lorenzo¥¥#0001!")
-            await ctx.send(f"{ctx.author.mention} Please check your DM!")
-        except discord.HTTPException:
-            raise Failure(ctx, "I'll need to be able to DM you, please enable DM from this server.")
-
-    @commands.cooldown(1, 10)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
-    @commands.command()
-    @checks.has_permissions(PermissionLevel.OWNER)
-    async def musicconfig(self, ctx, type: Str(lower=True), *, config: Str(remove_code=True)):
+    async def setconfig(self, ctx, type: Str(lower=True), *, config: Str(remove_code=True)):
         """
         There are three valid config types: `api`, `spotify` and `genius`.
 
@@ -560,12 +528,16 @@ class Music(commands.Cog, name="music"):
             )
             return await ctx.send("Successfully set and enabled music!")
 
-    @commands.cooldown(1, 1.5)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
+    
     async def search(self, ctx, *, query: Str(remove_code=True)):
         """Search for a song"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None        
         player: Player = ctx.player
 
         raw_query = query = query.strip('<>')
@@ -653,22 +625,23 @@ class Music(commands.Cog, name="music"):
         pages = self._render(tracks)
         return await ctx.send(pages[-1], allowed_mentions=AllowedMentions.none())
 
-    @commands.cooldown(1, 1.5, type=commands.BucketType.guild)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=['enqueue'])
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def play(self, ctx, *, query: Str(remove_code=True) = None):
         """Play your chosen track or playlist"""
-
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
-
         if query is None:
             logger.spam("Playing track? %s", player.is_playing_a_track)
             logger.spam("Paused? %s", player.paused)
             if not player.is_playing_a_track:
                 track = await player.play_previous()
                 if not track:
-                    raise Failure(ctx, "There's no songs in the queue!")
+                    raise Failure(ctx, "There are no songs in the queue!")
                 if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
                     try:
                         return await ctx.message.add_reaction(":white_check_mark:")
@@ -792,12 +765,15 @@ class Music(commands.Cog, name="music"):
         if not loaded_any_song:
             raise Failure(ctx, 'No matches found!')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
-    @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
+    @commands.command()  
     async def pause(self, ctx):
         """Pause the current track"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         if not player.paused:
             await player.set_pause(True)
@@ -811,9 +787,14 @@ class Music(commands.Cog, name="music"):
     @commands.cooldown(1, 2)
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def resume(self, ctx):
         """Resume the paused track"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         if player.paused:
             await player.set_pause(False)
@@ -827,7 +808,6 @@ class Music(commands.Cog, name="music"):
     @commands.cooldown(1, 2)
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=['skip'])
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def next(self, ctx):
         """Skip to the next track"""
         player: Player = ctx.player
@@ -851,7 +831,6 @@ class Music(commands.Cog, name="music"):
     @commands.cooldown(1, 2)
     @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=['prev', 'previous'])
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def back(self, ctx):
         """Return to the previous song"""
         player: Player = ctx.player
@@ -870,12 +849,15 @@ class Music(commands.Cog, name="music"):
                     logger.debug("Failed to add reaction")
             return await ctx.send('No more songs!')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=["summon"])
-    @checks.has_permissions(PermissionLevel.SUPPORTER)
     async def join(self, ctx):
         """Summon me to your vc"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
 
         if int(player.channel_id) != ctx.author.voice.channel.id:
@@ -887,12 +869,15 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         return await ctx.send('Joined!')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def clear(self, ctx):
         """Clears the queue"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         await player.queue.clear()
         if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
@@ -902,12 +887,15 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         return await ctx.send(f'{ctx.author.mention} cleared the queue!')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def queue(self, ctx):
         """Displays the queue"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         pages, current_track = player.queue.rendered
         if len(pages) == 1:
@@ -917,14 +905,16 @@ class Music(commands.Cog, name="music"):
             await session.show_page(current_track)
         await session.run()
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=['dc'])
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def disconnect(self, ctx):
         """Disconnects me from your voice channel and clears the queue"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
-
         # Clear the queue to ensure old tracks don't start playing
         # when someone else queues something.
         await player.queue.clear()
@@ -937,12 +927,15 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         await ctx.send(f'Disconnected from {ctx.author.voice.channel}')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def stop(self, ctx):
         """Stops the current song"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
 
         await player.queue.stop()
@@ -953,12 +946,15 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         return await ctx.send(f'{ctx.author.mention} stopped this track!')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def shuffle(self, ctx):
         """Shuffles the queue"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
 
         if not player.queue:
@@ -972,12 +968,15 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         return await ctx.send('Queue shuffled!')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(usage="<track or position> <new position>")
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def movequeue(self, ctx, *, move_query: str):
         """Move a song from the queue to a different position"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
 
         if not player.queue:
@@ -1003,12 +1002,15 @@ class Music(commands.Cog, name="music"):
         )
         await ctx.send(embed=embed)
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
-    @commands.command(usage="<track or position>")
-    @checks.has_permissions(PermissionLevel.REGULAR)
+    @commands.command(usage="<track or position>")    
     async def jump(self, ctx, *, jump_to: str):
         """Jump to a position in the queue"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None        
         player: Player = ctx.player
 
         if not player.queue:
@@ -1030,15 +1032,18 @@ class Music(commands.Cog, name="music"):
         )
         return await ctx.send(embed=embed)
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(usage="<track or position or range>")
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def remove(self, ctx, *, removing: str):
         """Remove track(s) from the queue
 
         Ranges can be specified with "start-end".
         """
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
 
         if not player.queue:
@@ -1075,15 +1080,17 @@ class Music(commands.Cog, name="music"):
             duration = float(duration)
         return duration
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=['ff'])
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def fastforward(self, ctx, *, duration: typing.Union[float, int, str]):
         """Fast forward the current track
 
         duration can be in seconds or in the format of `XHXMXS` (examples: 12M, 4M12S, 1H49S)"""
-
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         if not player.queue:
             raise Failure(ctx, "The queue is empty!")
@@ -1099,15 +1106,17 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         await ctx.send("Fast forward!")
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=['rw'])
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def rewind(self, ctx, *, duration: typing.Union[float, int, str]):
         """Rewind the current track
 
         duration can be in seconds or in the format of `XHXMXS` (examples: 12M, 4M12S, 1H49S)"""
-
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         if not player.queue:
             raise Failure(ctx, "The queue is empty!")
@@ -1123,15 +1132,17 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         await ctx.send("Rewind!")
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def seek(self, ctx, *, timestamp: typing.Union[float, int, str]):
         """Seek to a position in the track
 
         timestamp can be in seconds or in the format of `XHXMXS` (examples: 12M, 4M12S, 1H49S)"""
-
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         if not player.queue:
             raise Failure(ctx, "The queue is empty!")
@@ -1150,16 +1161,19 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         await ctx.send("Seeked!")
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=["song", 'np'])
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def nowplaying(self, ctx):
         """Shows the position of the current track"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None        
         player: Player = ctx.player
 
         if not player.is_playing_a_track:
-            raise Failure(ctx, "Not playing anything right now...")
+            raise Failure(ctx, "Nothing is currently playing!")
 
         embed = discord.Embed(
             description=f"**[{player.current.title}]({player.current.uri})** [<@!{player.current.requester}>]",
@@ -1182,15 +1196,18 @@ class Music(commands.Cog, name="music"):
         embed.set_footer(text=footer)
         await ctx.send(embed=embed)
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
-    @commands.command(aliases=["vol"])
-    @checks.has_permissions(PermissionLevel.REGULAR)
+    @commands.command(aliases=["vol"])  
     async def volume(self, ctx, *, new_volume: typing.Union[float, int, str] = 100):
         """Sets / resets the player volume
 
         Volume can be 1 (quietest) -> 200 (loudest), volume of 100 is the normal volume.
         """
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         if isinstance(new_volume, str):
             try:
                 new_volume = float(new_volume.strip('%'))
@@ -1198,7 +1215,7 @@ class Music(commands.Cog, name="music"):
                 return await ctx.send_help(ctx.command)
 
         if new_volume < 1 or new_volume > 200:
-            raise Failure(ctx, "Volume needs to be between 1-200!")
+            raise Failure(ctx, "Volume: `1-200`")
         if new_volume > 100:
             # total 100-300: 200 diff
             # settable 100-200: 100 diff
@@ -1208,7 +1225,7 @@ class Music(commands.Cog, name="music"):
 
         player: Player = ctx.player
         if new_normalised_volume == player.volume:
-            raise Failure(ctx, "I'm already playing at this volume!")
+            raise Failure(ctx, "Volume is already playing at this level!")
         elif new_normalised_volume > player.volume:
             emoji = "🔊"
         else:
@@ -1219,19 +1236,21 @@ class Music(commands.Cog, name="music"):
                 return await ctx.message.add_reaction(emoji)
             except discord.HTTPException:
                 logger.debug("Failed to add reaction")
-        await ctx.send(f"Volume changed to {new_volume}%!")
+        await ctx.send(f"Changing volume to {new_volume}%.")
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
-    @commands.command(aliases=["repeat"])
-    @checks.has_permissions(PermissionLevel.REGULAR)
+    @commands.command(aliases=["repeat"])    
     async def loop(self, ctx, *, track_or_queue: str.lower = None):
         """Loop the queue or the current track
 
         Can be `{prefix}loop track`, `{prefix}loop queue`, `{prefix}loop off`.
         By default I'll loop the entire queue!
         """
-
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         if not track_or_queue:
             track_or_queue = 'queue'
         elif track_or_queue == 'song':
@@ -1260,12 +1279,15 @@ class Music(commands.Cog, name="music"):
             message = "Looping is now **disabled**."
         await ctx.send(embed=discord.Embed(description=message, colour=self.bot.main_color))
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=["lyric"])
-    @checks.has_permissions(PermissionLevel.REGULAR)
     async def lyrics(self, ctx, *, song_name: Str(remove_code=True) = None):
         """Find the song lyrics for the current or any song"""
+        if ctx.message.channel != 995872482005372958:
+          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         if not self.lyrics_api:
             raise Failure(ctx, f"Genius API is not enabled, provide a GENIUS_TOKEN with the `{self.bot.prefix}musicconfig` command to enable this feature.")
@@ -1284,7 +1306,7 @@ class Music(commands.Cog, name="music"):
             if matches:
                 query, is_youtube_playlist = self._format_url(query)
                 if is_youtube_playlist:
-                    raise Failure(ctx, "Can't fetch lyrics for a playlist...")
+                    raise Failure(ctx, "Cannot fetch lyrics for a playlist!")
             elif not IDENTIFIER_REGEX.match(query):
                 song_name = query
                 need_process = False
@@ -1293,13 +1315,13 @@ class Music(commands.Cog, name="music"):
                 if self.spotify and query.startswith('spotify:'):
                     logger.spam("Processing spotify")
                     if 'track' not in query.split(":"):
-                        raise Failure(ctx, "Can't fetch lyrics for a playlist...")
+                        raise Failure(ctx, "Cannot fetch lyrics for a playlist!")
 
                     try:
                         titles, *_ = await self._req_spotify(query)
                     except SpotifyError as e:
                         logger.debug("Bad spotify %s", e)
-                        raise Failure(ctx, "It seems your Spotify link is invalid or is private.")
+                        raise Failure(ctx, "Spotify couldn't be reached!")
                     song_name = titles[0][0]
                 else:
                     try:
@@ -1351,21 +1373,6 @@ class Music(commands.Cog, name="music"):
 
         session = EmbedPaginatorSession(ctx, *embeds)
         await session.run()
-
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
-    @commands.command()
-    @checks.has_permissions(PermissionLevel.REGULAR)
-    async def aboutmusic(self, ctx):
-        """Shows the creator information of this music plugin"""
-        embed = discord.Embed(
-            description="This standalone Music Modmail plugin was created by @taku#3343.\n"
-                        "Originally made for [uwubot](https://top.gg/bot/720334365661462710).",
-            colour=0x8cffdb,
-        )
-        embed.add_field(name="Usage", value=f"To get started, request a free API URI with `{self.bot.prefix}requestapi` and once you have receive your API URI run `{self.bot.prefix}musicconfig api <APIURI>`.")
-        embed.add_field(name="Donate ❤️", value="If you're feeling generous, you can donate to my Patreon at https://www.patreon.com/takubot to support this free Groovy-alternative music bot!")
-        await ctx.send(embed=embed)
-
 
 def setup(bot):
     bot.add_cog(Music(bot))
