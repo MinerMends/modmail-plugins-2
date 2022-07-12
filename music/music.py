@@ -257,7 +257,8 @@ class Music(commands.Cog, name="music"):
         should_connect = ctx.command.qualified_name in {'play', 'join'}
 
         if not ctx.author.voice or not ctx.author.voice.channel:
-            raise Failure(ctx, 'Join a voice channel first.')
+            embed = discord.Embed(description="You need to join a voice channel first!",color=0x2f3136)
+            await ctx.reply(embed=embed)
 
         if not ctx.player.is_connected:
             if not should_connect:
@@ -787,8 +788,6 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         await ctx.reply("Paused!")
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command()
     async def resume(self, ctx):
         """Resume the paused track"""
@@ -808,11 +807,15 @@ class Music(commands.Cog, name="music"):
                 logger.debug("Failed to add reaction")
         await ctx.reply('Now resuming!')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=['skip'])
     async def next(self, ctx):
         """Skip to the next track"""
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         was_playing = player.is_playing_a_track
         await player.play_next(force=True)
@@ -831,11 +834,15 @@ class Music(commands.Cog, name="music"):
                     logger.debug("Failed to add reaction")
             return await ctx.reply('No more songs!')
 
-    @commands.cooldown(1, 2)
-    @commands.bot_has_permissions(send_messages=True, embed_links=True)
     @commands.command(aliases=['prev', 'previous'])
     async def back(self, ctx):
         """Return to the previous song"""
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
+          await ctx.reply(embed=embed,delete_after=10)
+          await asyncio.sleep(10)
+          await ctx.message.delete()
+          return None
         player: Player = ctx.player
         if await player.play_previous():
             if ctx.channel.permissions_for(ctx.guild.me).add_reactions:
@@ -1051,7 +1058,8 @@ class Music(commands.Cog, name="music"):
         player: Player = ctx.player
 
         if not player.queue:
-            raise Failure(ctx, "The queue is empty!")
+            embed = discord.Embed(description="The queue is currently empty!",color=0x2f3136)
+            await ctx.reply(embed=embed)
 
         track_or_pos_or_range = removing.strip('"` ')
         resp = await player.queue.remove_track(track_or_pos_or_range)
@@ -1097,9 +1105,11 @@ class Music(commands.Cog, name="music"):
           return None
         player: Player = ctx.player
         if not player.queue:
-            raise Failure(ctx, "The queue is empty!")
+            embed = discord.Embed(description="The queue is currently empty!",color=0x2f3136)
+            await ctx.reply(embed=embed)
         if not player.is_playing_a_track:
-            raise Failure(ctx, "Not playing anything right now...")
+            embed = discord.Embed(description="Not playing anything right now!",color=0x2f3136)
+            await ctx.reply(embed=embed)
 
         duration = self._parse_duration(ctx, duration)
         await player.fastforward(duration)
@@ -1123,9 +1133,11 @@ class Music(commands.Cog, name="music"):
           return None
         player: Player = ctx.player
         if not player.queue:
-            raise Failure(ctx, "The queue is empty!")
+            embed = discord.Embed(description="The queue is currently empty!",color=0x2f3136)
+            await ctx.reply(embed=embed)
         if not player.is_playing_a_track:
-            raise Failure(ctx, "Not playing anything right now...")
+            embed = discord.Embed(description="Not playing anything right now!",color=0x2f3136)
+            await ctx.reply(embed=embed)
 
         duration = self._parse_duration(ctx, duration)
         await player.rewind(duration)
@@ -1148,9 +1160,11 @@ class Music(commands.Cog, name="music"):
           return None
         player: Player = ctx.player
         if not player.queue:
-            raise Failure(ctx, "The queue is empty!")
+            embed = discord.Embed(description="The queue is currently empty!",color=0x2f3136)
+            await ctx.reply(embed=embed)
         if not player.is_playing_a_track:
-            raise Failure(ctx, "Not playing anything right now...")
+            embed = discord.Embed(description="Not playing anything right now!",color=0x2f3136)
+            await ctx.reply(embed=embed)
 
         timestamp = max(int(self._parse_duration(ctx, timestamp) * 1000), 0)
         if timestamp >= player.current.duration:
@@ -1176,7 +1190,8 @@ class Music(commands.Cog, name="music"):
         player: Player = ctx.player
 
         if not player.is_playing_a_track:
-            raise Failure(ctx, "Nothing is currently playing!")
+            embed = discord.Embed(description="Not playing anything right now!",color=0x2f3136)
+            await ctx.reply(embed=embed)
 
         embed = discord.Embed(
             description=f"**[{player.current.title}]({player.current.uri})** [<@!{player.current.requester}>]",
