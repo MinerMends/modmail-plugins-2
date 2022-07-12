@@ -532,8 +532,8 @@ class Music(commands.Cog, name="music"):
     
     async def search(self, ctx, *, query: Str(remove_code=True)):
         """Search for a song"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -628,8 +628,8 @@ class Music(commands.Cog, name="music"):
     @commands.command(aliases=['enqueue'])
     async def play(self, ctx, *, query: Str(remove_code=True) = None):
         """Play your chosen track or playlist"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -768,8 +768,8 @@ class Music(commands.Cog, name="music"):
     @commands.command()  
     async def pause(self, ctx):
         """Pause the current track"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -789,8 +789,8 @@ class Music(commands.Cog, name="music"):
     @commands.command()
     async def resume(self, ctx):
         """Resume the paused track"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -852,8 +852,8 @@ class Music(commands.Cog, name="music"):
     @commands.command(aliases=["summon"])
     async def join(self, ctx):
         """Summon me to your vc"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -872,8 +872,8 @@ class Music(commands.Cog, name="music"):
     @commands.command()
     async def clear(self, ctx):
         """Clears the queue"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -890,8 +890,8 @@ class Music(commands.Cog, name="music"):
     @commands.command()
     async def queue(self, ctx):
         """Displays the queue"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -908,8 +908,8 @@ class Music(commands.Cog, name="music"):
     @commands.command(aliases=['dc'])
     async def disconnect(self, ctx):
         """Disconnects me from your voice channel and clears the queue"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -930,8 +930,8 @@ class Music(commands.Cog, name="music"):
     @commands.command()
     async def stop(self, ctx):
         """Stops the current song"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -949,8 +949,8 @@ class Music(commands.Cog, name="music"):
     @commands.command()
     async def shuffle(self, ctx):
         """Shuffles the queue"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -971,8 +971,8 @@ class Music(commands.Cog, name="music"):
     @commands.command(usage="<track or position> <new position>")
     async def movequeue(self, ctx, *, move_query: str):
         """Move a song from the queue to a different position"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1005,8 +1005,8 @@ class Music(commands.Cog, name="music"):
     @commands.command(usage="<track or position>")    
     async def jump(self, ctx, *, jump_to: str):
         """Jump to a position in the queue"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1038,8 +1038,8 @@ class Music(commands.Cog, name="music"):
 
         Ranges can be specified with "start-end".
         """
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1085,8 +1085,8 @@ class Music(commands.Cog, name="music"):
         """Fast forward the current track
 
         duration can be in seconds or in the format of `XHXMXS` (examples: 12M, 4M12S, 1H49S)"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1111,8 +1111,8 @@ class Music(commands.Cog, name="music"):
         """Rewind the current track
 
         duration can be in seconds or in the format of `XHXMXS` (examples: 12M, 4M12S, 1H49S)"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1137,8 +1137,8 @@ class Music(commands.Cog, name="music"):
         """Seek to a position in the track
 
         timestamp can be in seconds or in the format of `XHXMXS` (examples: 12M, 4M12S, 1H49S)"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1164,8 +1164,8 @@ class Music(commands.Cog, name="music"):
     @commands.command(aliases=["song", 'np'])
     async def nowplaying(self, ctx):
         """Shows the position of the current track"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1202,8 +1202,8 @@ class Music(commands.Cog, name="music"):
 
         Volume can be 1 (quietest) -> 200 (loudest), volume of 100 is the normal volume.
         """
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1245,8 +1245,8 @@ class Music(commands.Cog, name="music"):
         Can be `{prefix}loop track`, `{prefix}loop queue`, `{prefix}loop off`.
         By default I'll loop the entire queue!
         """
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
@@ -1282,8 +1282,8 @@ class Music(commands.Cog, name="music"):
     @commands.command(aliases=["lyric"])
     async def lyrics(self, ctx, *, song_name: Str(remove_code=True) = None):
         """Find the song lyrics for the current or any song"""
-        if ctx.message.channel != 995872482005372958:
-          embed = discord.Embed(description="Use music in <#995872482005372958>.",color=0x2f3136)
+        if ctx.message.channel.id != 995872482005372958:
+          embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
           await asyncio.sleep(10)
           await ctx.message.delete()
