@@ -1138,9 +1138,6 @@ class Music(commands.Cog, name="music"):
 
     @commands.command()
     async def seek(self, ctx, *, timestamp: typing.Union[float, int, str]):
-        """Seek to a position in the track
-
-        timestamp can be in seconds or in the format of `XHXMXS` (examples: 12M, 4M12S, 1H49S)"""
         if ctx.message.channel.id != 995872482005372958:
           embed = discord.Embed(description="**Use music in <#995872482005372958>.**",color=0x2f3136)
           await ctx.reply(embed=embed,delete_after=10)
@@ -1268,7 +1265,8 @@ class Music(commands.Cog, name="music"):
 
         if track_or_queue == 'track':
             if not player.is_playing_a_track:
-                raise Failure(ctx, "I'm not playing anything right now...")
+                embed= discord.EMbed(description="I'm not playing anything!",color=0x2f3136)
+                await ctx.channel.send(embed=embed)
             player.repeat = 'track'
             message = "Now looping the **current track**."
         elif track_or_queue == 'queue':
