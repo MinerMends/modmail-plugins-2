@@ -483,9 +483,9 @@ class Queue:
             if track == self.current and self.player.is_playing_a_track:
                 repeat = ' (loop)' if self.repeat == 'track' else ''
                 left = seconds_to_time_string(self.remaining / 1000, int_seconds=True, format=2)
-                messages[-1] += f"{' ' * (count_length + 3)}⬐ current track{repeat}\n" \
+                messages[-1] += f"{' ' * (count_length + 3)}⬐ Current Song{repeat}\n" \
                                 f"{i: >{count_length}}) {title} {left} left\n" \
-                                f"{' ' * (count_length + 3)}⬑ current track{repeat}\n"
+                                f"{' ' * (count_length + 3)}⬑ Current Song{repeat}\n"
                 current_page = (i-1) // track_per_page
             else:
                 if hasattr(track, 'duration'):
@@ -502,9 +502,9 @@ class Queue:
 
         messages[-1] += "\n"
         if self.repeat == 'queue':
-            messages[-1] += f"{' ' * (count_length + 2)}This queue is on a loop!"
+            messages[-1] += f"{' ' * (count_length + 2)}#MendingArmy Queue System 2.0 [Looped]"
         else:
-            messages[-1] += f"{' ' * (count_length + 2)}This is the end of the queue!"
+            messages[-1] += f"{' ' * (count_length + 2)}#MendingArmy Queue System 2.0 [End]"
         for i in range(len(messages)):
             messages[i] = prefix + messages[i].replace('```', '``\u200b`').replace('@', '@\u200b') + suffix
         return messages, current_page
